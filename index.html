@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VK Likes Counter</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <form id="likeForm">
+        <label for="likeCount">Введите количество записей:</label>
+        <input type="number" id="likeCount" name="likeCount" min="1" required>
+        <button type="button" onclick="getLikes()">Получить лайки</button>
+    </form>
+    <div id="likeTable">
+        <!-- Здесь будут отображаться данные -->
+    </div>
+    <script>
+        function getLikes() {
+            const count = document.getElementById("likeCount").value;
+            fetch("likes.php?count=" + count)
+                .then(response => response.text()) // Принимаем текстовый ответ
+                .then(data => {
+                    let table = '<table><tr><th>Имя</th><th>Количество лайков</th></tr>';
+                    // Разбиваем данные на строки и добавляем их в таблицу
+                    data.split('\n').forEach(function(row) {
+                        const columns = row.split(':');
+                        table += '<tr><td>' + columns[0] + '</td><td>' + columns[1] + '</td></tr>';
+                    });
+                    table += '</table>';
+                    // Вставляем сгенерированную таблицу в div
+                    document.getElementById("likeTable").innerHTML = table;
+                });
+        }
+    </script>
+</body>
+</html>
